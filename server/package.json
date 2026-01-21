@@ -1,0 +1,10 @@
+{
+  "name": "forward-web-share-debug-server",
+  "version": "1.0.0",
+  "description": "Debug server to verify relay is working",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {}
+}
