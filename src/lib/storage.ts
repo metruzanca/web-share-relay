@@ -1,7 +1,7 @@
 // Storage module for config and logs
 
-const CONFIG_KEY = 'forward-web-share-config';
-const LOGS_KEY = 'forward-web-share-logs';
+const CONFIG_KEY = 'webshare-relay-config';
+const LOGS_KEY = 'webshare-relay-logs';
 const MAX_LOGS = 50;
 const SHARE_TARGET_STORE = 'share-target-store';
 

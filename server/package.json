@@ -1,5 +1,5 @@
 {
-  "name": "forward-web-share-debug-server",
+  "name": "webshare-relay-debug-server",
   "version": "1.0.0",
   "description": "Debug server to verify relay is working",
   "type": "module",

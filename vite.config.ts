@@ -18,9 +18,9 @@ export default defineConfig({
       },
       includeAssets: ['favicon.ico', 'pwa-192x192.svg', 'pwa-512x512.svg'],
       manifest: {
-        name: 'Forward Web Share',
-        short_name: 'Forward',
-        description: 'Forward shared content to a custom API endpoint',
+        name: 'WebShare Relay',
+        short_name: 'Relay',
+        description: 'Relay shared content to a custom API endpoint',
         theme_color: '#3b82f6',
         background_color: '#1f2937',
         display: 'standalone',

@@ -86,5 +86,5 @@ server.listen(PORT, () => {
   console.log(`\n🚀 Debug server running at http://localhost:${PORT}`);
   console.log(`\nTo expose via ngrok:`);
   console.log(`  ngrok http ${PORT}`);
-  console.log(`\nThen use the ngrok URL as your Forward URL in the PWA.\n`);
+  console.log(`\nThen use the ngrok URL as your Relay URL in the PWA.\n`);
 });

@@ -1,6 +1,6 @@
-# Forward Web Share
+# WebShare Relay
 
-A PWA that acts as a Web Share Target on Android, forwarding shared content to your custom API endpoint.
+A PWA that acts as a Web Share Target on Android, relaying shared content to your custom API endpoint.
 
 ## How It Works
 
@@ -35,13 +35,13 @@ Then expose via ngrok:
 ngrok http 3001
 ```
 
-Use the ngrok URL as your Forward URL in the PWA.
+Use the ngrok URL as your Relay URL in the PWA.
 
 ---
 
 ## API Integration Guide
 
-When content is shared to the PWA, it sends a POST request to your configured endpoint.
+When content is shared to the PWA, it relays a POST request to your configured endpoint.
 
 ### Request Format
 

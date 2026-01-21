@@ -93,8 +93,8 @@ const App: Component = () => {
   return (
     <div class={styles.app}>
       <header class={styles.header}>
-        <h1>Forward Web Share</h1>
-        <p>Forward shared content to your API</p>
+        <h1>WebShare Relay</h1>
+        <p>Relay shared content to your API</p>
       </header>
 
       <nav class={styles.tabs}>

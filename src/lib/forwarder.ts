@@ -82,7 +82,7 @@ function updateLogStatus(
   error?: string
 ): void {
   try {
-    const logsJson = localStorage.getItem('forward-web-share-logs');
+    const logsJson = localStorage.getItem('webshare-relay-logs');
     if (!logsJson) return;
     
     const logs = JSON.parse(logsJson);
@@ -91,7 +91,7 @@ function updateLogStatus(
       logs[index].status = status;
       if (response !== undefined) logs[index].response = response;
       if (error !== undefined) logs[index].error = error;
-      localStorage.setItem('forward-web-share-logs', JSON.stringify(logs));
+      localStorage.setItem('webshare-relay-logs', JSON.stringify(logs));
     }
   } catch (e) {
     console.error('Error updating log status:', e);
