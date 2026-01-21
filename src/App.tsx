@@ -1,8 +1,8 @@
 import { Component, createSignal, createEffect, onMount, Show, For } from 'solid-js';
 import styles from './App.module.css';
 import {
-  getForwardUrl,
-  setForwardUrl,
+  getConfig,
+  setConfig,
   getLogs,
   clearLogs,
   getPendingShareData,
@@ -16,7 +16,8 @@ type View = 'config' | 'share' | 'logs';
 
 const App: Component = () => {
   const [activeView, setActiveView] = createSignal<View>('config');
-  const [forwardUrl, setForwardUrlState] = createSignal('');
+  const [relayUrl, setRelayUrl] = createSignal('');
+  const [autoRelay, setAutoRelay] = createSignal(false);
   const [saved, setSaved] = createSignal(false);
   const [logs, setLogs] = createSignal<LogEntry[]>([]);
   const [pendingShare, setPendingShare] = createSignal<ShareData | null>(null);
@@ -25,7 +26,9 @@ const App: Component = () => {
 
   // Load initial data
   onMount(async () => {
-    setForwardUrlState(getForwardUrl());
+    const config = getConfig();
+    setRelayUrl(config.relayUrl);
+    setAutoRelay(config.autoRelay);
     setLogs(getLogs());
     
     // Check for pending share data from URL
@@ -35,6 +38,11 @@ const App: Component = () => {
       if (shareData) {
         setPendingShare(shareData);
         setActiveView('share');
+        
+        // Auto-relay if enabled and URL is configured
+        if (config.autoRelay && config.relayUrl) {
+          await performRelay(shareData, config.relayUrl);
+        }
       }
       // Clean up URL
       window.history.replaceState({}, '', '/');
@@ -49,17 +57,12 @@ const App: Component = () => {
   });
 
   const handleSaveConfig = () => {
-    setForwardUrl(forwardUrl());
+    setConfig({ relayUrl: relayUrl(), autoRelay: autoRelay() });
     setSaved(true);
     setTimeout(() => setSaved(false), 2000);
   };
 
-  const handleForward = async () => {
-    const share = pendingShare();
-    const url = forwardUrl();
-    
-    if (!share || !url) return;
-    
+  const performRelay = async (share: ShareData, url: string) => {
     setForwardStatus('pending');
     const result = await forwardShare(share, url);
     setForwardResult(result);
@@ -67,6 +70,15 @@ const App: Component = () => {
     
     // Clear pending share data
     await clearPendingShareData();
+  };
+
+  const handleForward = async () => {
+    const share = pendingShare();
+    const url = relayUrl();
+    
+    if (!share || !url) return;
+    
+    await performRelay(share, url);
   };
 
   const handleClearShare = async () => {
@@ -126,15 +138,25 @@ const App: Component = () => {
         <Show when={activeView() === 'config'}>
           <div class={styles.configView}>
             <div class={styles.inputGroup}>
-              <label for="forwardUrl">Forward URL</label>
+              <label for="relayUrl">Relay URL</label>
               <input
-                id="forwardUrl"
+                id="relayUrl"
                 type="url"
                 class={styles.input}
                 placeholder="https://your-api.com/webhook"
-                value={forwardUrl()}
-                onInput={(e) => setForwardUrlState(e.currentTarget.value)}
+                value={relayUrl()}
+                onInput={(e) => setRelayUrl(e.currentTarget.value)}
               />
+            </div>
+            <div class={styles.checkboxGroup}>
+              <input
+                id="autoRelay"
+                type="checkbox"
+                class={styles.checkbox}
+                checked={autoRelay()}
+                onChange={(e) => setAutoRelay(e.currentTarget.checked)}
+              />
+              <label for="autoRelay">Auto-relay (skip confirmation)</label>
             </div>
             <button class={styles.button} onClick={handleSaveConfig}>
               Save Configuration
@@ -142,9 +164,9 @@ const App: Component = () => {
             <Show when={saved()}>
               <p class={styles.savedMessage}>Configuration saved!</p>
             </Show>
-            <Show when={!forwardUrl()}>
+            <Show when={!relayUrl()}>
               <p style={{ color: '#f59e0b', 'font-size': '0.875rem', 'text-align': 'center' }}>
-                Configure a forward URL to enable sharing
+                Configure a relay URL to enable sharing
               </p>
             </Show>
           </div>
@@ -232,9 +254,9 @@ const App: Component = () => {
                     </div>
                   </Show>
 
-                  <Show when={!forwardUrl()}>
+                  <Show when={!relayUrl()}>
                     <div class={`${styles.statusMessage} ${styles.statusError}`}>
-                      No forward URL configured. Go to Config tab to set one.
+                      No relay URL configured. Go to Config tab to set one.
                     </div>
                   </Show>
 
@@ -242,9 +264,9 @@ const App: Component = () => {
                     <button
                       class={styles.button}
                       onClick={handleForward}
-                      disabled={!forwardUrl()}
+                      disabled={!relayUrl()}
                     >
-                      Forward to {forwardUrl() ? new URL(forwardUrl()).hostname : 'API'}
+                      Relay to {relayUrl() ? new URL(relayUrl()).hostname : 'API'}
                     </button>
                   </Show>
 

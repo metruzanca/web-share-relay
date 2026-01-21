@@ -6,8 +6,9 @@ const MAX_LOGS = 50;
 const SHARE_TARGET_STORE = 'share-target-store';
 
 // Types
-export interface ForwardConfig {
-  forwardUrl: string;
+export interface RelayConfig {
+  relayUrl: string;
+  autoRelay: boolean;
 }
 
 export interface LogEntry {
@@ -33,22 +34,35 @@ export interface ShareData {
 }
 
 // Config functions
-export function getForwardUrl(): string {
+export function getConfig(): RelayConfig {
   try {
     const config = localStorage.getItem(CONFIG_KEY);
     if (config) {
-      const parsed = JSON.parse(config) as ForwardConfig;
-      return parsed.forwardUrl || '';
+      const parsed = JSON.parse(config);
+      return {
+        relayUrl: parsed.relayUrl || parsed.forwardUrl || '',
+        autoRelay: parsed.autoRelay ?? false,
+      };
     }
   } catch (e) {
     console.error('Error reading config:', e);
   }
-  return '';
+  return { relayUrl: '', autoRelay: false };
+}
+
+export function setConfig(config: RelayConfig): void {
+  localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+}
+
+// Legacy compatibility
+export function getForwardUrl(): string {
+  return getConfig().relayUrl;
 }
 
 export function setForwardUrl(url: string): void {
-  const config: ForwardConfig = { forwardUrl: url };
-  localStorage.setItem(CONFIG_KEY, JSON.stringify(config));
+  const config = getConfig();
+  config.relayUrl = url;
+  setConfig(config);
 }
 
 // Logs functions
