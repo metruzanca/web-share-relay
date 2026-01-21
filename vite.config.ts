@@ -8,11 +8,15 @@ export default defineConfig({
     devtools(),
     solidPlugin(),
     VitePWA({
+      strategies: 'injectManifest',
+      srcDir: 'src',
+      filename: 'sw.ts',
       registerType: 'autoUpdate',
       devOptions: {
         enabled: true,
+        type: 'module',
       },
-      includeAssets: ['favicon.ico'],
+      includeAssets: ['favicon.ico', 'pwa-192x192.svg', 'pwa-512x512.svg'],
       manifest: {
         name: 'Forward Web Share',
         short_name: 'Forward',
@@ -56,7 +60,7 @@ export default defineConfig({
           },
         },
       },
-      workbox: {
+      injectManifest: {
         globPatterns: ['**/*.{js,css,html,ico,png,svg}'],
       },
     }),
