@@ -12,6 +12,7 @@ body {
   background-color: #1f2937;
   color: #f9fafb;
   min-height: 100vh;
+  overflow-x: hidden;
 }
 
 code {
