@@ -41,7 +41,12 @@ const App: Component = () => {
         
         // Auto-relay if enabled and URL is configured
         if (config.autoRelay && config.relayUrl) {
-          await performRelay(shareData, config.relayUrl);
+          const result = await performRelay(shareData, config.relayUrl);
+          // Return to previous app after successful auto-forward
+          if (result.success) {
+            window.history.back();
+            return;
+          }
         }
       }
       // Clean up URL
@@ -62,7 +67,7 @@ const App: Component = () => {
     setTimeout(() => setSaved(false), 2000);
   };
 
-  const performRelay = async (share: ShareData, url: string) => {
+  const performRelay = async (share: ShareData, url: string): Promise<ForwardResult> => {
     setForwardStatus('pending');
     const result = await forwardShare(share, url);
     setForwardResult(result);
@@ -70,6 +75,8 @@ const App: Component = () => {
     
     // Clear pending share data
     await clearPendingShareData();
+    
+    return result;
   };
 
   const handleForward = async () => {
